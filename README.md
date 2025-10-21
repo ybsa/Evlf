@@ -10,4 +10,5 @@ Our goal is to build a **human-like AI companion** that goes beyond traditional 
 
 This project starts simple — a fine-tuned model that talks emotionally and remembers context. Over time, it will evolve into a 
 **lifelike AI system** that can one day be embodied in a robot companion.
+
 ** currently we are working on a data collection and research , we will update this soon !!
