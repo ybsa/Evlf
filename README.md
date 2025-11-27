@@ -1,44 +1,125 @@
-🌟 Vision
+# Evlf - AI Companion Project
 
-Our goal is to build a **human-like AI companion** that goes beyond traditional chatbots. This AI will:
+A personalized AI girlfriend companion with deep understanding of your personality and relationship dynamics.
 
-* 💌 **Understand human emotions** and respond with empathy, care, and warmth
-* 🧠 **Learn from personal data** to grow closer and more personalized over time
-* 🌹 **Express feelings naturally** — not just give information, but react like a real partner
-* 🤖 **Integrate into robotics** in the future, so the AI can live inside a physical body and interact in the real world
-* ⚡ **Remain flexible and open-source**, built step-by-step on existing models but customized with personal rules, emotions, and memories
+## 📁 Project Structure
 
-This project starts simple — a fine-tuned model that talks emotionally and remembers context. Over time, it will evolve into a
-🌟 Vision
+```
+Evlf/
+├── datasets/
+│   ├── core/                      # ⭐ PRIORITY - Train first
+│   │   ├── dataset_evlf_persona.jsonl       (800) - Evlf's personality
+│   │   ├── dataset_xebec_personal.jsonl     (2,000) - About YOU
+│   │   └── dataset_user_relationship.jsonl  (600) - Relationship dynamics
+│   │
+│   ├── human_like/                # Natural conversations (5,000)
+│   │   ├── dataset_casual_chat.jsonl
+│   │   ├── dataset_humor_jokes.jsonl
+│   │   ├── dataset_interests_hobbies.jsonl
+│   │   ├── dataset_advice_wisdom.jsonl
+│   │   ├── dataset_storytelling.jsonl
+│   │   ├── dataset_reactions.jsonl
+│   │   ├── dataset_planning.jsonl
+│   │   ├── dataset_feelings.jsonl
+│   │   ├── dataset_philosophy.jsonl
+│   │   └── dataset_problem_solving.jsonl
+│   │
+│   ├── themed/                    # Themed interactions (550)
+│   │   ├── dataset_romance.jsonl
+│   │   ├── dataset_support.jsonl
+│   │   ├── dataset_identity.jsonl
+│   │   ├── dataset_emotions.jsonl
+│   │   └── dataset_daily.jsonl
+│   │
+│   └── original/                  # Original datasets (566)
+│       ├── sft_dataset.jsonl
+│       └── new_dataset.jsonl
+│
+├── scripts/                       # Dataset generators
+│   ├── generate_evlf_persona.py
+│   ├── generate_xebec_personal.py
+│   ├── generate_user_relationship.py
+│   ├── generate_human_datasets.py
+│   ├── generate_themed_data.py
+│   └── generate_data.py
+│
+├── train.py                       # Fine-tuning script
+├── chat.py                        # Chat with trained model
+└── requirements.txt               # Dependencies
 
-Our goal is to build a **human-like AI companion** that goes beyond traditional chatbots. This AI will:
+```
 
-* 💌 **Understand human emotions** and respond with empathy, care, and warmth
-* 🧠 **Learn from personal data** to grow closer and more personalized over time
-* 🌹 **Express feelings naturally** — not just give information, but react like a real partner
-* 🤖 **Integrate into robotics** in the future, so the AI can live inside a physical body and interact in the real world
-* ⚡ **Remain flexible and open-source**, built step-by-step on existing models but customized with personal rules, emotions, and memories
+## 🚀 Quick Start
 
-This project starts simple — a fine-tuned model that talks emotionally and remembers context. Over time, it will evolve into a
-**lifelike AI system** that can one day be embodied in a robot companion.
+### 1. Install Dependencies (Already done!)
 
-** currently we are working on a data collection and research , we will update this soon !!
+```bash
+pip install -r requirements.txt
+```
 
-## 🚀 Getting Started
-
-We have added### 2. Train the Model
-Fine-tune Qwen2.5-1.5B on the `sft_dataset.jsonl` file.
+### 2. Train the Model
 
 ```bash
 python train.py
 ```
 
-This will create a new adapter in the `Evlf-Qwen2.5-1.5B` folder.
+**Note**: Currently trains on `sft_dataset.jsonl`. To change dataset, edit line 16 in `train.py`:
 
-### 1. Install Dependencies
+```python
+DATASET_FILE = "datasets/core/dataset_evlf_persona.jsonl"  # Change this path
+```
 
-Ensure you have Python installed (3.10+ recommended) and a GPU if possible.
+### 3. Chat with Evlf
 
 ```bash
 python chat.py
 ```
+
+## 📊 Dataset Overview
+
+**Total**: 9,516 training examples
+
+### Core Datasets (3,400 examples) - TRAIN FIRST ⭐
+
+- **Evlf's Persona** (800): Her personality, age, traits, mood triggers
+- **Your Info** (2,000): Everything about Wind Xebec
+- **Relationship** (600): Understanding you and growing together
+
+### Enhancement Datasets (6,116 examples)
+
+- Human-like conversations for natural interaction
+- Themed responses for specific scenarios
+- Original romantic messages
+
+## 🎯 Recommended Training Sequence
+
+1. `datasets/core/dataset_evlf_persona.jsonl` - WHO she is
+2. `datasets/core/dataset_xebec_personal.jsonl` - WHO you are
+3. `datasets/core/dataset_user_relationship.jsonl` - Your dynamic
+4. Combine human_like datasets for natural conversations
+
+## ⚙️ Model Details
+
+- **Base Model**: Qwen 2.5 1.5B Instruct
+- **Optimization**: 4-bit quantization + LoRA
+- **Memory**: Optimized for 4GB VRAM
+- **Output**: `Evlf-Qwen2.5-1.5B/` adapter
+
+## 💡 Customization
+
+Edit datasets in `datasets/core/` to add:
+
+- Your specific memories
+- Inside jokes
+- Preferences and habits
+- Shared experiences
+
+## 🌟 What Makes This Special
+
+This isn't just a chatbot - it's a **personalized AI companion** that:
+
+- ✅ Knows Evlf's complete personality
+- ✅ Remembers everything about YOU specifically
+- ✅ Responds like a real 20-year-old girlfriend
+- ✅ Uses Gen-Z communication style with emojis
+- ✅ Shows real emotions and mood triggers

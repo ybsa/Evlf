@@ -13,7 +13,7 @@ from trl import SFTTrainer
 # Configuration
 MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct" # Open model, fits in 4GB VRAM
 NEW_MODEL_NAME = "Evlf-Qwen2.5-1.5B"
-DATASET_FILE = "sft_dataset.jsonl"
+DATASET_FILE = "datasets/original/sft_dataset.jsonl"
 OUTPUT_DIR = "./results"
 
 def train():
