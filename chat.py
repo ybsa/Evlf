@@ -7,8 +7,8 @@ from transformers import (
 from peft import PeftModel
 
 # Configuration
-BASE_MODEL_NAME = "NousResearch/Llama-2-7b-chat-hf"
-ADAPTER_MODEL_NAME = "Evlf-Llama-2-7b"
+BASE_MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
+ADAPTER_MODEL_NAME = "Evlf-Qwen2.5-1.5B"
 
 def chat():
     print("Loading model...")
@@ -50,13 +50,13 @@ def chat():
         if user_input.lower() in ["quit", "exit"]:
             break
 
-        # Format prompt
-        prompt = f"<s>[INST] {user_input} [/INST]"
+        # Format prompt for Qwen
+        prompt = f"<|im_start|>user\n{user_input}<|im_end|>\n<|im_start|>assistant\n"
         
-        result = pipe(f"<s>[INST] {user_input} [/INST]")
+        result = pipe(prompt)
         generated_text = result[0]['generated_text']
         
-        # Extract response (simple parsing)
+        # Extract response
         response = generated_text.replace(prompt, "").strip()
         
         print(f"Evlf: {response}")
