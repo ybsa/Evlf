@@ -1,0 +1,40 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Model files (too large for git)
+models/checkpoints/*
+!models/checkpoints/.gitkeep
+models/final/*
+!models/final/.gitkeep
+
+# Training results
+results/
+*.pt
+*.bin
+
+# Temporary files
+offload/
+metrics_output.txt
+*.log
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tracker files (user-specific)
+training_tracker.json

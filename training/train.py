@@ -11,10 +11,10 @@ from peft import LoraConfig
 from trl import SFTTrainer, SFTConfig
 
 # Configuration
-MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct" # Open model, fits in 4GB VRAM
-NEW_MODEL_NAME = "Evlf-Qwen2.5-1.5B"
-DATASET_FILE = "datasets/original/sft_dataset.jsonl"
-OUTPUT_DIR = "./results"
+MODEL_NAME = "Evlf-Qwen2.5-1.5B"  # Start from our trained model
+NEW_MODEL_NAME = "Evlf-Qwen2.5-1.5B-step2"
+DATASET_FILE = "datasets/core/dataset_evlf_persona.jsonl"  # Second dataset: Evlf's persona
+OUTPUT_DIR = "./results_step2"
 
 def train():
     print(f"Loading dataset from {DATASET_FILE}...")
@@ -65,7 +65,7 @@ def train():
         logging_steps=5,
         learning_rate=2e-4,
         weight_decay=0.001,
-        fp16=False,
+        fp16=True,
         bf16=False,
         max_grad_norm=0.3,
         max_steps=-1,
@@ -73,7 +73,7 @@ def train():
         group_by_length=True,
         lr_scheduler_type="constant",
         dataset_text_field="text",
-        max_seq_length=2048, # Explicitly set max_seq_length
+        max_length=2048, # Explicitly set max_length
         packing=False,
     )
 
@@ -82,7 +82,7 @@ def train():
         model=model,
         train_dataset=dataset,
         peft_config=peft_config,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         args=training_args,
         formatting_func=format_instruction,
     )
@@ -95,7 +95,11 @@ def train():
 
 def format_instruction(sample):
     # Format: <|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant\n{response}<|im_end|>
-    return [f"<|im_start|>user\n{row['instruction']}<|im_end|>\n<|im_start|>assistant\n{row['response']}<|im_end|>" for row in sample]
+    # Check if we have a list (batch) or string (single)
+    if isinstance(sample['instruction'], list):
+        return [f"<|im_start|>user\n{inst}<|im_end|>\n<|im_start|>assistant\n{resp}<|im_end|>" for inst, resp in zip(sample['instruction'], sample['response'])]
+    else:
+        return f"<|im_start|>user\n{sample['instruction']}<|im_end|>\n<|im_start|>assistant\n{sample['response']}<|im_end|>"
 
 if __name__ == "__main__":
     # Check if dataset exists
