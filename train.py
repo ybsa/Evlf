@@ -8,7 +8,7 @@ from transformers import (
     TrainingArguments,
 )
 from peft import LoraConfig
-from trl import SFTTrainer
+from trl import SFTTrainer, SFTConfig
 
 # Configuration
 MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct" # Open model, fits in 4GB VRAM
@@ -55,7 +55,7 @@ def train():
     )
 
     # Training Arguments
-    training_args = TrainingArguments(
+    training_args = SFTConfig(
         output_dir=OUTPUT_DIR,
         num_train_epochs=3,
         per_device_train_batch_size=1, # Lowest batch size for 4GB VRAM
@@ -72,6 +72,9 @@ def train():
         warmup_ratio=0.03,
         group_by_length=True,
         lr_scheduler_type="constant",
+        dataset_text_field="text",
+        max_seq_length=2048, # Explicitly set max_seq_length
+        packing=False,
     )
 
     print("Starting training...")
@@ -79,11 +82,8 @@ def train():
         model=model,
         train_dataset=dataset,
         peft_config=peft_config,
-        dataset_text_field="text", # We need to format the dataset first!
-        max_seq_length=None,
         tokenizer=tokenizer,
         args=training_args,
-        packing=False,
         formatting_func=format_instruction,
     )
 
