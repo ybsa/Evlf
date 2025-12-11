@@ -11,8 +11,8 @@ from peft import LoraConfig
 from trl import SFTTrainer, SFTConfig
 
 # Configuration
-MODEL_NAME = "NousResearch/Meta-Llama-3.1-8B-Instruct"
-NEW_MODEL_NAME = "Evlf-Llama-3.1-8B-step1"
+MODEL_NAME = "meta-llama/Llama-3.2-3B-Instruct"
+NEW_MODEL_NAME = "Evlf-Llama-3.2-3B-step1"
 DATASET_FILE = "datasets/core/dataset_evlf_persona.jsonl"
 OUTPUT_DIR = "./results_step1"
 
@@ -41,7 +41,7 @@ def train():
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
-    # LoRA Config for Llama 3.1
+    # LoRA Config for Llama 3.2
     peft_config = LoraConfig(
         lora_alpha=16,
         lora_dropout=0.1,
@@ -91,7 +91,7 @@ def train():
     trainer.tokenizer.save_pretrained(NEW_MODEL_NAME)
 
 def format_instruction(sample):
-    # Llama 3.1 Instruct Format
+    # Llama 3.2 Instruct Format
     # <|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{instruction}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{response}<|eot_id|>
     
     if isinstance(sample['instruction'], list):

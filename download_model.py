@@ -1,10 +1,10 @@
 from huggingface_hub import snapshot_download
 import os
 
-MODEL_NAME = "NousResearch/Meta-Llama-3.1-8B-Instruct"
+MODEL_NAME = "meta-llama/Llama-3.2-3B-Instruct"
 
 print(f"🚀 Starting download for: {MODEL_NAME}")
-print("This will download ~13GB. Please wait...")
+print("This will download ~6GB. Please wait...")
 
 try:
     path = snapshot_download(

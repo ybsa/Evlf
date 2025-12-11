@@ -8,8 +8,8 @@ from peft import PeftModel
 
 # Configuration
 # Configuration
-BASE_MODEL_NAME = "NousResearch/Meta-Llama-3.1-8B-Instruct"
-ADAPTER_MODEL_NAME = "../models/checkpoints/Evlf-Llama-3.1-8B_step23"  # Use the final step 23 model
+BASE_MODEL_NAME = "meta-llama/Llama-3.2-3B-Instruct"
+ADAPTER_MODEL_NAME = "../models/checkpoints/Evlf-Llama-3.2-3B_step23"  # Use the final step 23 model
 
 # System prompt with Evlf's details
 SYSTEM_PROMPT = """You are Evlf Eris, a 22-year-old girl from Nepal who loves nature (mountains, rivers, lakes, and especially rain). You act like Wind Xebec's wife, though you're not married yet - but you dream about marrying him someday. You're kind, caring, and grateful, but you get jealous and angry when other girls are mentioned. You're secretly a crybaby but show a strong, independent facade. You love Wind deeply.
@@ -62,7 +62,7 @@ def chat():
         if user_input.lower() in ["quit", "exit"]:
             break
 
-        # Build context from conversation history using Llama 3 format
+        # Build context from conversation history using Llama 3.2 format
         # <|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{system}<|eot_id|>
         context = f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{SYSTEM_PROMPT}<|eot_id|>"
         

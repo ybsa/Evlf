@@ -17,15 +17,15 @@ from dataset_tracker import DatasetTracker
 
 # Configuration
 # Configuration
-MODEL_NAME = "NousResearch/Meta-Llama-3.1-8B-Instruct"
-BASE_MODEL_NAME = "../models/checkpoints/Evlf-Llama-3.1-8B"
+MODEL_NAME = "meta-llama/Llama-3.2-3B-Instruct"
+BASE_MODEL_NAME = "../models/checkpoints/Evlf-Llama-3.2-3B"
 OUTPUT_DIR = "../results/by_step/results"
 
 # Training mode: "sequential" or "combined"
 TRAINING_MODE = "sequential"  # Change to "combined" to train all at once
 
 def format_instruction(sample):
-    """Format instruction for Llama 3.1 model."""
+    """Format instruction for Llama 3.2 model."""
     system_prompt = "You are Evlf, a loving and caring girlfriend."
     
     def format_single(inst, resp):

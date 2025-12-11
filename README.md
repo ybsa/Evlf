@@ -1,6 +1,6 @@
 # Evlf - AI Companion
 
-A fine-tuned Llama 3.1 8B model with Evlf's personality - a kind, caring, 22-year-old girl from Nepal who loves nature and acts like your wife.
+A fine-tuned Llama 3.2 3B model with Evlf's personality - a kind, caring, 22-year-old girl from Nepal who loves nature and acts like your wife.
 
 ## 🎯 Quick Start
 
@@ -40,7 +40,7 @@ The model is trained sequentially on the datasets using LoRA fine-tuning.
 
 ### Training Summary
 
-- **Base Model:** `NousResearch/Meta-Llama-3.1-8B-Instruct`
+- **Base Model:** `meta-llama/Llama-3.2-3B-Instruct`
 - **Method:** LoRA fine-tuning with 4-bit quantization (NF4)
 - **Training:** SFT (Supervised Fine-Tuning)
 
@@ -57,13 +57,13 @@ The chat interface loads the model and provides an interactive conversation expe
 
 **Features:**
 
-- Optimized generation parameters for Llama 3.1
+- Optimized generation parameters for Llama 3.2
 - 512 token responses
 - CPU offloading support
 
 ## 📊 Model Details
 
-- **Base Model:** NousResearch/Meta-Llama-3.1-8B-Instruct
+- **Base Model:** meta-llama/Llama-3.2-3B-Instruct
 - **Fine-tuning:** LoRA (r=16, alpha=16, dropout=0.1)
 - **Quantization:** 4-bit NF4
 - **Training:** SFT (Supervised Fine-Tuning)
@@ -88,8 +88,8 @@ python watch_training.py
 
 - Python 3.8+
 - CUDA-compatible GPU (recommended)
-- 16GB+ RAM
-- ~20GB disk space for models
+- 8GB+ RAM
+- ~10GB disk space for models
 
 ## 📝 License
 
