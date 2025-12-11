@@ -1,6 +1,6 @@
 # Evlf - AI Companion
 
-A fine-tuned Qwen2.5-1.5B model with Evlf's personality - a kind, caring, 22-year-old girl from Nepal who loves nature and acts like your wife.
+A fine-tuned Llama 3.1 8B model with Evlf's personality - a kind, caring, 22-year-old girl from Nepal who loves nature and acts like your wife.
 
 ## 🎯 Quick Start
 
@@ -15,7 +15,7 @@ python chat.py
 
 ## 📁 Project Structure
 
-```
+```text
 Evlf/
 ├── datasets/           # Training data (22 datasets organized by category)
 │   ├── core/          # Core persona and relationship data
@@ -23,29 +23,26 @@ Evlf/
 │   ├── themed/        # Themed interactions (romance, support, etc.)
 │   └── original/      # Original training data
 ├── models/            # Trained models
-│   ├── final/         # Final fully-trained model (step 22)
-│   └── checkpoints/   # All intermediate models (step 1-22)
+│   ├── final/         # Final fully-trained model
+│   └── checkpoints/   # Intermediate models
 ├── scripts/           # Data generation scripts
 │   └── utils/         # Utility scripts
 ├── training/          # Training scripts and tools
 ├── inference/         # Chat interface
 ├── results/           # Training results and checkpoints
-│   └── by_step/       # Results organized by training step
 ├── docs/              # Documentation
 └── archive/           # Old debug files
 ```
 
 ## 🚀 Training
 
-All 22 datasets have been trained sequentially, with each model building on the previous one.
+The model is trained sequentially on the datasets using LoRA fine-tuning.
 
 ### Training Summary
 
-- **Total Datasets:** 22
-- **Training Time:** ~12 hours
-- **Final Model:** `models/final/Evlf-Qwen2.5-1.5B-Final`
-- **Method:** LoRA fine-tuning with 4-bit quantization
-- **Epochs:** 5 for large datasets (>300 examples), 10 for small datasets
+- **Base Model:** `NousResearch/Meta-Llama-3.1-8B-Instruct`
+- **Method:** LoRA fine-tuning with 4-bit quantization (NF4)
+- **Training:** SFT (Supervised Fine-Tuning)
 
 ### Dataset Categories
 
@@ -56,35 +53,28 @@ All 22 datasets have been trained sequentially, with each model building on the 
 
 ## 💬 Chat Interface
 
-The chat interface loads the final model and provides an interactive conversation experience.
+The chat interface loads the model and provides an interactive conversation experience.
 
 **Features:**
 
-- Optimized generation parameters (temperature, top_p, repetition penalty)
+- Optimized generation parameters for Llama 3.1
 - 512 token responses
-- CPU offloading support for running alongside training
+- CPU offloading support
 
 ## 📊 Model Details
 
-- **Base Model:** Qwen/Qwen2.5-1.5B-Instruct
+- **Base Model:** NousResearch/Meta-Llama-3.1-8B-Instruct
 - **Fine-tuning:** LoRA (r=16, alpha=16, dropout=0.1)
 - **Quantization:** 4-bit NF4
-- **Training:** SFT (Supervised Fine-Tuning) with validation
+- **Training:** SFT (Supervised Fine-Tuning)
 
 ## 🛠️ Development
 
-### Re-train a specific dataset
+### Train a dataset
 
 ```bash
 cd training
 python train.py
-```
-
-### Train on multiple datasets
-
-```bash
-cd training
-python train_multi_dataset.py
 ```
 
 ### Monitor training
@@ -99,7 +89,7 @@ python watch_training.py
 - Python 3.8+
 - CUDA-compatible GPU (recommended)
 - 16GB+ RAM
-- ~30GB disk space for models
+- ~20GB disk space for models
 
 ## 📝 License
 

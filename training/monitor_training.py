@@ -75,7 +75,7 @@ def monitor_training():
             print(f"   (Could not read detailed metrics: {e})")
     
     # Check if final model exists
-    final_model_dir = "./Evlf-Qwen2.5-1.5B"
+    final_model_dir = "./Evlf-Llama-3.1-8B-Final"
     if os.path.exists(final_model_dir):
         print(f"\n🎉 Training Complete!")
         print(f"   Final model saved to: {final_model_dir}")

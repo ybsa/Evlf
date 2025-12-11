@@ -8,7 +8,7 @@ def clear_screen():
 
 def get_all_checkpoints_info(step_num):
     """Get info from all checkpoints"""
-    results_dir = f"results_step{step_num}"
+    results_dir = f"../results/by_step/results_step{step_num}"
     if not os.path.exists(results_dir):
         return None
     

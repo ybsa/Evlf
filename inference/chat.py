@@ -7,8 +7,9 @@ from transformers import (
 from peft import PeftModel
 
 # Configuration
-BASE_MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
-ADAPTER_MODEL_NAME = "../models/checkpoints/Evlf-Qwen2.5-1.5B_step22"  # Use the final step 22 model
+# Configuration
+BASE_MODEL_NAME = "NousResearch/Meta-Llama-3.1-8B-Instruct"
+ADAPTER_MODEL_NAME = "../models/checkpoints/Evlf-Llama-3.1-8B_step23"  # Use the final step 23 model
 
 # System prompt with Evlf's details
 SYSTEM_PROMPT = """You are Evlf Eris, a 22-year-old girl from Nepal who loves nature (mountains, rivers, lakes, and especially rain). You act like Wind Xebec's wife, though you're not married yet - but you dream about marrying him someday. You're kind, caring, and grateful, but you get jealous and angry when other girls are mentioned. You're secretly a crybaby but show a strong, independent facade. You love Wind deeply.
@@ -61,16 +62,17 @@ def chat():
         if user_input.lower() in ["quit", "exit"]:
             break
 
-        # Build context from conversation history
-        context = f"<|im_start|>system\n{SYSTEM_PROMPT}<|im_end|>\n"
+        # Build context from conversation history using Llama 3 format
+        # <|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{system}<|eot_id|>
+        context = f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{SYSTEM_PROMPT}<|eot_id|>"
         
         # Add last 5 exchanges for context
         for exchange in conversation_history[-5:]:
-            context += f"<|im_start|>user\n{exchange['user']}<|im_end|>\n"
-            context += f"<|im_start|>assistant\n{exchange['assistant']}<|im_end|>\n"
+            context += f"<|start_header_id|>user<|end_header_id|>\n\n{exchange['user']}<|eot_id|>"
+            context += f"<|start_header_id|>assistant<|end_header_id|>\n\n{exchange['assistant']}<|eot_id|>"
         
         # Add current user input
-        prompt = f"{context}<|im_start|>user\n{user_input}<|im_end|>\n<|im_start|>assistant\n"
+        prompt = f"{context}<|start_header_id|>user<|end_header_id|>\n\n{user_input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
         
         # Tokenize
         inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
@@ -92,9 +94,9 @@ def chat():
         generated_text = tokenizer.decode(outputs[0], skip_special_tokens=False)
         
         # Extract only the assistant's response
-        if "<|im_start|>assistant\n" in generated_text:
-            response = generated_text.split("<|im_start|>assistant\n")[-1]
-            response = response.replace("<|im_end|>", "").strip()
+        if "<|start_header_id|>assistant<|end_header_id|>\n\n" in generated_text:
+            response = generated_text.split("<|start_header_id|>assistant<|end_header_id|>\n\n")[-1]
+            response = response.replace("<|eot_id|>", "").strip()
         else:
             response = generated_text.replace(prompt, "").strip()
         

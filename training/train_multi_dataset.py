@@ -16,20 +16,29 @@ from trl import SFTTrainer, SFTConfig
 from dataset_tracker import DatasetTracker
 
 # Configuration
-MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
-BASE_MODEL_NAME = "../models/checkpoints/Evlf-Qwen2.5-1.5B"
+# Configuration
+MODEL_NAME = "NousResearch/Meta-Llama-3.1-8B-Instruct"
+BASE_MODEL_NAME = "../models/checkpoints/Evlf-Llama-3.1-8B"
 OUTPUT_DIR = "../results/by_step/results"
 
 # Training mode: "sequential" or "combined"
 TRAINING_MODE = "sequential"  # Change to "combined" to train all at once
 
 def format_instruction(sample):
-    """Format instruction for Qwen model."""
+    """Format instruction for Llama 3.1 model."""
+    system_prompt = "You are Evlf, a loving and caring girlfriend."
+    
+    def format_single(inst, resp):
+        return f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{system_prompt}<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{inst}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{resp}<|eot_id|>"
+
     if isinstance(sample['instruction'], list):
-        return [f"<|im_start|>user\n{inst}<|im_end|>\n<|im_start|>assistant\n{resp}<|im_end|>" 
-                for inst, resp in zip(sample['instruction'], sample['response'])]
+        # Batched processing
+        # print(f"DEBUG: Batched input. Len: {len(sample['instruction'])}") 
+        return [format_single(inst, resp) for inst, resp in zip(sample['instruction'], sample['response'])]
     else:
-        return f"<|im_start|>user\n{sample['instruction']}<|im_end|>\n<|im_start|>assistant\n{sample['response']}<|im_end|>"
+        # Single example
+        # print(f"DEBUG: Single input.")
+        return format_single(sample['instruction'], sample['response'])
 
 def load_and_prepare_model(model_path):
     """Load model with quantization."""
@@ -122,7 +131,6 @@ def train_on_dataset(dataset_path, model_path, output_suffix=""):
         warmup_ratio=0.03,
         group_by_length=True,
         lr_scheduler_type="constant",
-        dataset_text_field="text",
         max_length=2048,
         packing=False,
         # Validation settings
@@ -160,6 +168,7 @@ def train_sequential():
     
     # Get all pending datasets
     pending = status["pending"]
+    print(f"DEBUG: Found {len(pending)} pending datasets")
     
     if not pending:
         print("✅ All datasets have been trained!")
@@ -169,8 +178,8 @@ def train_sequential():
     print(f"\n🔄 Sequential Training Mode")
     print(f"Found {len(pending)} datasets to train\n")
     
-    # Start with the step11 model (latest valid cumulative model)
-    current_model = "Evlf-Qwen2.5-1.5B_step11"
+    # Start with the base model for the first dataset
+    current_model = MODEL_NAME
     
     for i, dataset_info in enumerate(pending, 1):
         dataset_path = dataset_info['path']
@@ -184,7 +193,20 @@ def train_sequential():
             print(f"{'='*70}\n")
             
             # Train
-            suffix = f"_step{11 + i}"  # Start from step12 since we have step11
+            # For the first dataset, we use base model. For others, we use previous step.
+            # We need a consistent naming scheme.
+            # Let's use _step1, _step2, etc.
+            
+            # Calculate step number based on completed datasets + current index
+            # But since we are starting fresh or resuming, we should trust the tracker?
+            # If we reset tracker, 'pending' has everything.
+            # Let's just use the loop index if we assume fresh start.
+            # Or better: count completed + i
+            
+            completed_count = len(status['completed'])
+            step_num = completed_count + 1
+            suffix = f"_step{step_num}"
+            
             final_model = train_on_dataset(dataset_path, current_model, suffix)
             
             # Mark as completed
@@ -240,9 +262,10 @@ def train_combined():
     tracker.display_status()
 
 if __name__ == "__main__":
-    print("="*70)
-    print("🚀 EVLF MULTI-DATASET TRAINER")
-    print("="*70)
+    print("="*70, flush=True)
+    print("🚀 EVLF MULTI-DATASET TRAINER", flush=True)
+    print("="*70, flush=True)
+    print(f"DEBUG: Mode is {TRAINING_MODE}", flush=True)
     
     if TRAINING_MODE == "sequential":
         train_sequential()

@@ -11,10 +11,10 @@ from peft import LoraConfig
 from trl import SFTTrainer, SFTConfig
 
 # Configuration
-MODEL_NAME = "Evlf-Qwen2.5-1.5B"  # Start from our trained model
-NEW_MODEL_NAME = "Evlf-Qwen2.5-1.5B-step2"
-DATASET_FILE = "datasets/core/dataset_evlf_persona.jsonl"  # Second dataset: Evlf's persona
-OUTPUT_DIR = "./results_step2"
+MODEL_NAME = "NousResearch/Meta-Llama-3.1-8B-Instruct"
+NEW_MODEL_NAME = "Evlf-Llama-3.1-8B-step1"
+DATASET_FILE = "datasets/core/dataset_evlf_persona.jsonl"
+OUTPUT_DIR = "./results_step1"
 
 def train():
     print(f"Loading dataset from {DATASET_FILE}...")
@@ -39,16 +39,13 @@ def train():
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
     tokenizer.pad_token = tokenizer.eos_token
-    # Qwen sometimes needs specific pad token handling if eos is not set
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
-    # LoRA Config
+    # LoRA Config for Llama 3.1
     peft_config = LoraConfig(
         lora_alpha=16,
         lora_dropout=0.1,
-        r=16, # Reduced r for memory
+        r=16,
         bias="none",
         task_type="CAUSAL_LM",
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
@@ -58,8 +55,8 @@ def train():
     training_args = SFTConfig(
         output_dir=OUTPUT_DIR,
         num_train_epochs=3,
-        per_device_train_batch_size=1, # Lowest batch size for 4GB VRAM
-        gradient_accumulation_steps=4, # Accumulate gradients to simulate larger batch
+        per_device_train_batch_size=1,
+        gradient_accumulation_steps=4,
         optim="paged_adamw_32bit",
         save_steps=25,
         logging_steps=5,
@@ -73,7 +70,7 @@ def train():
         group_by_length=True,
         lr_scheduler_type="constant",
         dataset_text_field="text",
-        max_length=2048, # Explicitly set max_length
+        max_length=2048,
         packing=False,
     )
 
@@ -94,15 +91,15 @@ def train():
     trainer.tokenizer.save_pretrained(NEW_MODEL_NAME)
 
 def format_instruction(sample):
-    # Format: <|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant\n{response}<|im_end|>
-    # Check if we have a list (batch) or string (single)
+    # Llama 3.1 Instruct Format
+    # <|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{instruction}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{response}<|eot_id|>
+    
     if isinstance(sample['instruction'], list):
-        return [f"<|im_start|>user\n{inst}<|im_end|>\n<|im_start|>assistant\n{resp}<|im_end|>" for inst, resp in zip(sample['instruction'], sample['response'])]
+        return [f"<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{inst}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{resp}<|eot_id|>" for inst, resp in zip(sample['instruction'], sample['response'])]
     else:
-        return f"<|im_start|>user\n{sample['instruction']}<|im_end|>\n<|im_start|>assistant\n{sample['response']}<|im_end|>"
+        return f"<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{sample['instruction']}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{sample['response']}<|eot_id|>"
 
 if __name__ == "__main__":
-    # Check if dataset exists
     if not os.path.exists(DATASET_FILE):
         print(f"Error: {DATASET_FILE} not found.")
     else:

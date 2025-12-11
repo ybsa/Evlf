@@ -33,8 +33,11 @@ class DatasetTracker:
         datasets = []
         
         # Search in all subdirectories
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        datasets_dir = os.path.join(base_dir, '..', 'datasets')
+        
         for category in ['core', 'human_like', 'themed', 'original']:
-            category_path = os.path.join('datasets', category)
+            category_path = os.path.join(datasets_dir, category)
             if os.path.exists(category_path):
                 for file in glob.glob(os.path.join(category_path, '*.jsonl')):
                     datasets.append({
