@@ -17,21 +17,19 @@ python chat.py
 
 ```text
 Evlf/
-├── datasets/           # Training data (22 datasets organized by category)
+├── datasets/           # Training data (organized by category)
 │   ├── core/          # Core persona and relationship data
 │   ├── human_like/    # Human-like conversation skills
-│   ├── themed/        # Themed interactions (romance, support, etc.)
+│   ├── themed/        # Themed interactions
 │   └── original/      # Original training data
 ├── models/            # Trained models
-│   ├── final/         # Final fully-trained model
-│   └── checkpoints/   # Intermediate models
-├── scripts/           # Data generation scripts
+├── scripts/           # Project scripts
+│   ├── data_generation/ # Data generation scripts
+│   ├── setup/         # Setup and download scripts
 │   └── utils/         # Utility scripts
 ├── training/          # Training scripts and tools
 ├── inference/         # Chat interface
-├── results/           # Training results and checkpoints
-├── docs/              # Documentation
-└── archive/           # Old debug files
+└── docs/              # Documentation
 ```
 
 ## 🚀 Training
@@ -44,10 +42,32 @@ The model is trained sequentially on the datasets using LoRA fine-tuning.
 - **Method:** LoRA fine-tuning with 4-bit quantization (NF4)
 - **Training:** SFT (Supervised Fine-Tuning)
 
+### Scripts Organization
+
+The `scripts/` directory contains all utility and generation scripts:
+
+- **`data_generation/`**: Scripts for generating training datasets
+  - `generate_evlf_persona.py` - Core personality data
+  - `generate_evlf_eris_background.py` - Background stories
+  - `generate_user_relationship.py` - Relationship dynamics
+  - `generate_xebec_personal.py` - Personal interactions
+  - `generate_girlfriend_casual.py` - Casual conversations
+  - `generate_human_datasets.py` - Human-like responses
+  - `generate_themed_data.py` - Themed interactions
+  - `generate_dataset_v2.py` - Template-based dataset generator
+
+- **`setup/`**: Setup and initialization scripts
+  - `download_model.py` - Downloads the base Llama model
+
+- **`utils/`**: Utility scripts for data management
+  - `check_dataset_sizes.py` - Validates dataset file sizes
+  - `check_metrics.py` - Analyzes training metrics
+  - `rebalance_datasets.py` - Balances dataset distributions
+
 ### Dataset Categories
 
 1. **Core** (4 datasets): Evlf's persona, background, relationship with user
-2. **Human-like** (9 datasets): Conversation skills, emotions, philosophy, planning, etc.
+2. **Human-like** (9 datasets): Conversation skills, emotions, philosophy, planning
 3. **Themed** (6 datasets): Daily life, identity, romance, support, emotions
 4. **Original** (3 datasets): Foundation datasets
 
