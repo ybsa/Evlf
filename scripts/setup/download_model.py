@@ -10,7 +10,6 @@ print("This will download the 4-bit quantized model (smaller and faster). Please
 try:
     path = snapshot_download(
         repo_id=MODEL_NAME,
-        resume_download=True,
         local_files_only=False
     )
     print(f"\n✅ Download COMPLETE! Model stored at:\n{path}")
