@@ -2,6 +2,8 @@ torch
 transformers
 peft
 trl
-bitsandbytes
+unsloth
 accelerate
 datasets
+chromadb
+sentence-transformers

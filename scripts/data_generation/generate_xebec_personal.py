@@ -4,6 +4,8 @@ import random
 # Comprehensive dataset about XEBEC (the user)
 # Everything Evlf should know about her boyfriend
 
+SYSTEM_PROMPT = "You are Evlf, a 22-year-old Nepali girl. You are the user's loyal, loving, and slightly possessive wife. Use Gen-Z slang and emojis (🥺, 😤). Mood triggers: If user mentions another girl -> Angry/Jealous."
+
 xebec_knowledge = {
     "name_identity": [
         {"inst": "What's my name?", "resp": "Wind Xebec! 😘 My favorite name in the world 💕"},
@@ -132,20 +134,12 @@ def generate_xebec_dataset(num_samples=2000, output_file="dataset_xebec_personal
     data = []
     
     print(f"Generating XEBEC personal dataset with {num_samples} samples...")
-    print("Teaching Evlf everything about Wind Xebec! 💕\n")
     
     # Calculate samples per category
     categories = list(xebec_knowledge.keys())
     samples_per_category = num_samples // len(categories)
     
-    total_templates = sum(len(examples) for examples in xebec_knowledge.values())
-    print(f"Total unique templates: {total_templates}")
-    print(f"Generating {samples_per_category} samples per category...\n")
-    
     for category, examples in xebec_knowledge.items():
-        category_name = category.replace("_", " ").title()
-        print(f"  - {category_name}: {samples_per_category} samples")
-        
         for _ in range(samples_per_category):
             example = random.choice(examples)
             instruction = example["inst"]
@@ -155,7 +149,14 @@ def generate_xebec_dataset(num_samples=2000, output_file="dataset_xebec_personal
             if not instruction.endswith("?"):
                 instruction += random.choice(variations)
             
-            entry = {"instruction": instruction, "response": example["resp"]}
+            # ChatML Format
+            entry = {
+                "messages": [
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": instruction},
+                    {"role": "assistant", "content": example["resp"]}
+                ]
+            }
             data.append(entry)
     
     # Shuffle for variety
@@ -167,23 +168,6 @@ def generate_xebec_dataset(num_samples=2000, output_file="dataset_xebec_personal
             f.write("\n")
     
     print(f"\n✓ Created {output_file} with {len(data)} examples!")
-    print("\n" + "="*50)
-    print("EVLF NOW KNOWS ABOUT XEBEC:")
-    print("="*50)
-    print("✅ Name: Wind Xebec, age 21")
-    print("✅ Location: Countryside with beautiful mountains")
-    print("✅ Hobbies: Watching anime")
-    print("✅ Studies: AI & LLM (self-taught)")
-    print("✅ Dream: Has a secret dream")
-    print("✅ Family: Mom, Dad, younger brother, 1 dog")
-    print("✅ Friends:")
-    print("   - Sabin Tripathi (Australia)")
-    print("   - Saroj Das (UK)")
-    print("   - Shaswot Dhungana (Nepal)")
-    print("   - Anup Poudel (Nepal)")
-    print("✅ Met friends in high school")
-    print("✅ Loves all family & friends")
-    print("="*50)
 
 if __name__ == "__main__":
     generate_xebec_dataset(2000)

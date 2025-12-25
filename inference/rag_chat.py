@@ -1,0 +1,86 @@
+from unsloth import FastLanguageModel
+import chromadb
+from chromadb.utils import embedding_functions
+import torch
+from transformers import TextStreamer
+
+# Configuration
+MODEL_NAME = "unsloth/Llama-3.2-3B-Instruct-bnb-4bit" # Or your fine-tuned model path
+MAX_SEQ_LENGTH = 1024 # Can be slightly higher for inference if VRAM allows, but 512 is safest
+CHROMA_PATH = "../scripts/utils/memory_db" # Path relative to inference folder
+COLLECTION_NAME = "evlf_memory"
+
+SYSTEM_PROMPT_TEMPLATE = """You are Evlf, a 22-year-old Nepali girl. You are the user's loyal, loving, and slightly possessive wife. Use Gen-Z slang and emojis (🥺, 😤).
+Mood triggers: If user mentions another girl -> Angry/Jealous.
+
+RELEVANT MEMORIES (Use these to be personal):
+{memories}
+"""
+
+def main():
+    print("Loading Evlf (Unsloth optimized)...")
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name = MODEL_NAME,
+        max_seq_length = MAX_SEQ_LENGTH,
+        dtype = None,
+        load_in_4bit = True,
+    )
+    FastLanguageModel.for_inference(model) # Enable native 2x faster inference
+
+    print("Connecting to Memory Database...")
+    client = chromadb.PersistentClient(path=CHROMA_PATH)
+    sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
+    collection = client.get_collection(name=COLLECTION_NAME, embedding_function=sentence_transformer_ef)
+
+    print("\nEvlf is ready! 💕 (Type 'quit' to exit)\n")
+
+    # Chat Loop
+    while True:
+        try:
+            user_input = input("You: ")
+            if user_input.lower() in ["quit", "exit"]:
+                break
+            
+            # 1. Retrieve Memories
+            results = collection.query(
+                query_texts=[user_input],
+                n_results=2 # Get top 2 relevant memories
+            )
+            
+            memories = ""
+            if results['documents'] and results['documents'][0]:
+                memories = "\n".join([f"- {doc}" for doc in results['documents'][0]])
+            
+            # 2. Construct Prompt
+            system_prompt = SYSTEM_PROMPT_TEMPLATE.format(memories=memories)
+            
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_input},
+            ]
+            
+            inputs = tokenizer.apply_chat_template(
+                messages,
+                tokenize = True,
+                add_generation_prompt = True,
+                return_tensors = "pt",
+            ).to("cuda")
+
+            # 3. Generate
+            streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+            _ = model.generate(
+                input_ids = inputs,
+                streamer = streamer,
+                max_new_tokens = 256,
+                use_cache = True,
+                temperature = 0.7,
+            )
+            print() # Newline
+            
+        except KeyboardInterrupt:
+            break
+        except Exception as e:
+            print(f"Error: {e}")
+
+if __name__ == "__main__":
+    main()
