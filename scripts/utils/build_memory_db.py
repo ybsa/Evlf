@@ -7,8 +7,8 @@ import os
 CHROMA_PATH = "memory_db"
 COLLECTION_NAME = "evlf_memory"
 DATA_FILES = [
-    "dataset_xebec_personal.jsonl",
-    "dataset_user_relationship.jsonl"
+    "datasets/core/dataset_xebec_personal.jsonl",
+    "datasets/core/dataset_user_relationship.jsonl"
 ]
 
 def build_memory_db():
@@ -54,11 +54,15 @@ def build_memory_db():
                     user_msg = ""
                     assistant_msg = ""
                     
-                    for msg in entry.get("messages", []):
-                        if msg["role"] == "user":
-                            user_msg = msg["content"]
-                        elif msg["role"] == "assistant":
-                            assistant_msg = msg["content"]
+                    if "messages" in entry:
+                        for msg in entry["messages"]:
+                            if msg["role"] == "user":
+                                user_msg = msg["content"]
+                            elif msg["role"] == "assistant":
+                                assistant_msg = msg["content"]
+                    elif "instruction" in entry and "response" in entry:
+                        user_msg = entry["instruction"]
+                        assistant_msg = entry["response"]
                     
                     if user_msg and assistant_msg:
                         # We embed the "Fact" or "Memory" which is the combination

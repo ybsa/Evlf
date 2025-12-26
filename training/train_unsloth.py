@@ -45,12 +45,38 @@ def train():
     dataset = load_dataset("json", data_files=data_files, split="train")
 
     print("Starting training with optimized settings...")
+    
+    # 1. Setup ChatML/Llama-3 template
+    from unsloth.chat_templates import get_chat_template
+    tokenizer = get_chat_template(
+        tokenizer,
+        chat_template = "llama-3",
+    )
+
+    # 2. Define formatting function for instruction/response dataset
+    def formatting_prompts_func(examples):
+        instructions = examples["instruction"]
+        responses    = examples["response"]
+        texts = []
+        for instruction, response in zip(instructions, responses):
+            # Format using Llama-3 template
+            # System prompt is optional, but we can add Evlf's persona here if we want consistent training
+            # For now, we'll keep it simple: User -> Assistant
+            conversation = [
+                {"role": "user", "content": instruction},
+                {"role": "assistant", "content": response},
+            ]
+            text = tokenizer.apply_chat_template(conversation, tokenize=False, add_generation_prompt=False)
+            texts.append(text)
+        return { "text" : texts, }
+
     trainer = SFTTrainer(
         model = model,
         train_dataset = dataset,
-        dataset_text_field = "text", # This might need adjustment based on ChatML, usually unsloth handles it or we preprocess
+        dataset_text_field = "text",
         max_seq_length = MAX_SEQ_LENGTH,
         tokenizer = tokenizer,
+        formatting_func = formatting_prompts_func, # Use our custom formatter
         args = TrainingArguments(
             per_device_train_batch_size = 1, # Critical for 4GB
             gradient_accumulation_steps = 4, # Effective batch size = 4
@@ -68,18 +94,7 @@ def train():
         ),
     )
     
-    from unsloth.chat_templates import get_chat_template
-    
-    # Setup ChatML template
-    tokenizer = get_chat_template(
-        tokenizer,
-        chat_template = "llama-3", # or "chatml"
-        mapping = {"role" : "from", "content" : "value", "user" : "human", "assistant" : "gpt"}, # ShareGPT style mapping if needed, or standard
-    )
-    
-    # We need a formatting function for ChatML input if dataset is raw JSONL (Standard HuggingFace format)
-    # If dataset is {"messages": [...]}, SFTTrainer needs a slight adjustment or a formatting func.
-    # Unsloth makes this easy usually. Let's assume standard 'messages' column from the new generation scripts.
+
     
     trainer_stats = trainer.train()
     
