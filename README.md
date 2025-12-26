@@ -2,114 +2,97 @@
 
 A fine-tuned Llama 3.2 3B model with Evlf's personality - a kind, caring, 22-year-old girl from Nepal who loves nature and acts like your wife.
 
+This project uses **Unsloth** for efficient fine-tuning and **ChromaDB** for RAG (Retrieval Augmented Generation) memory.
+
+## ⚠️ Requirements
+
+- **Python 3.10** (Strictly required for Unsloth/GPU compatibility)
+- **NVIDIA GPU** with CUDA support (Minimum 4GB VRAM with 4-bit quantization)
+- **RAM**: 8GB+ recommended
+
 ## 🎯 Quick Start
 
-```bash
-# 1. Install dependencies
-pip install -r requirements.txt
+### 1. Environment Setup (Critical)
 
-# 2. Chat with Evlf
-cd inference
-python chat.py
+You **must** use Python 3.10 to avoid GPU compatibility issues.
+
+```powershell
+# 1. Create a virtual environment using Python 3.10
+py -3.10 -m venv .venv
+
+# 2. Activate the environment
+.\.venv\Scripts\activate
+
+# 3. Install dependencies (with GPU support)
+# This installs PyTorch with CUDA 12.1
+pip install -r requirements.txt
 ```
+
+### 2. Prepare Memory (RAG)
+
+Before chatting, you need to build Evlf's memory database from the datasets.
+
+```bash
+cd scripts/utils
+python build_memory_db.py
+```
+
+This creates the `memory_db/chroma.sqlite3` database.
+
+### 3. Chat with Evlf
+
+```bash
+cd inference
+python rag_chat.py
+```
+
+- **`rag_chat.py`**: Uses RAG (Memory). Recommended.
+- `chat.py`: Basic chat without memory.
 
 ## 📁 Project Structure
 
 ```text
 Evlf/
-├── datasets/           # Training data (organized by category)
-│   ├── core/          # Core persona and relationship data
-│   ├── human_like/    # Human-like conversation skills
-│   ├── themed/        # Themed interactions
-│   └── original/      # Original training data
-├── models/            # Trained models
-├── scripts/           # Project scripts
-│   ├── data_generation/ # Data generation scripts
-│   ├── setup/         # Setup and download scripts
-│   └── utils/         # Utility scripts
-├── training/          # Training scripts and tools
-├── inference/         # Chat interface
-└── docs/              # Documentation
+├── datasets/           # Training data (JSONL)
+│   ├── core/           # Persona & relationship data
+│   └── ...
+├── memory_db/          # ChromaDB RAG database (Generated)
+├── scripts/            
+│   ├── setup/          # download_model.py
+│   └── utils/          # build_memory_db.py
+├── training/           # Unsloth training scripts
+│   └── train_unsloth.py
+├── inference/          # Chat interfaces
+│   ├── rag_chat.py     # RAG-enabled chat
+│   └── chat.py         # Standard chat
+└── requirements.txt    # Project dependencies
 ```
 
-## 🚀 Training
+## 🚀 Training (Fine-Tuning)
 
-The model is trained sequentially on the datasets using LoRA fine-tuning.
+We use **Unsloth** for 2x faster training and 60% less memory usage.
 
-### Training Summary
+### 1. Configuration
 
-- **Base Model:** `meta-llama/Llama-3.2-3B-Instruct`
-- **Method:** LoRA fine-tuning with 4-bit quantization (NF4)
-- **Training:** SFT (Supervised Fine-Tuning)
+Check `training/train_unsloth.py`. It is configured to use:
 
-### Scripts Organization
+- Model: `unsloth/Llama-3.2-3B-Instruct-bnb-4bit`
+- Max Sequence Length: `512` (for low VRAM)
 
-The `scripts/` directory contains all utility and generation scripts:
+### 2. Start Training
 
-- **`data_generation/`**: Scripts for generating training datasets
-  - `generate_evlf_persona.py` - Core personality data
-  - `generate_evlf_eris_background.py` - Background stories
-  - `generate_user_relationship.py` - Relationship dynamics
-  - `generate_xebec_personal.py` - Personal interactions
-  - `generate_girlfriend_casual.py` - Casual conversations
-  - `generate_human_datasets.py` - Human-like responses
-  - `generate_themed_data.py` - Themed interactions
-  - `generate_dataset_v2.py` - Template-based dataset generator
+```bash
+python training/train_unsloth.py
+```
 
-- **`setup/`**: Setup and initialization scripts
-  - `download_model.py` - Downloads the base Llama model
-
-- **`utils/`**: Utility scripts for data management
-  - `check_dataset_sizes.py` - Validates dataset file sizes
-  - `check_metrics.py` - Analyzes training metrics
-  - `rebalance_datasets.py` - Balances dataset distributions
-
-### Dataset Categories
-
-1. **Core** (4 datasets): Evlf's persona, background, relationship with user
-2. **Human-like** (9 datasets): Conversation skills, emotions, philosophy, planning
-3. **Themed** (6 datasets): Daily life, identity, romance, support, emotions
-4. **Original** (3 datasets): Foundation datasets
-
-## 💬 Chat Interface
-
-The chat interface loads the model and provides an interactive conversation experience.
-
-**Features:**
-
-- Optimized generation parameters for Llama 3.2
-- 512 token responses
-- CPU offloading support
+This will produce LoRA adapters in the `results_unsloth` directory.
 
 ## 📊 Model Details
 
-- **Base Model:** meta-llama/Llama-3.2-3B-Instruct
-- **Fine-tuning:** LoRA (r=16, alpha=16, dropout=0.1)
-- **Quantization:** 4-bit NF4
-- **Training:** SFT (Supervised Fine-Tuning)
-
-## 🛠️ Development
-
-### Train a dataset
-
-```bash
-cd training
-python train.py
-```
-
-### Monitor training
-
-```bash
-cd training
-python watch_training.py
-```
-
-## ⚠️ Requirements
-
-- Python 3.8+
-- CUDA-compatible GPU (recommended)
-- 8GB+ RAM
-- ~10GB disk space for models
+- **Base Model:** `unsloth/Llama-3.2-3B-Instruct-bnb-4bit`
+- **Method:** LoRA (Low-Rank Adaptation)
+- **Quantization:** 4-bit (NF4) for 4GB VRAM compatibility.
+- **Context Window:** 512 - 2048 tokens (adjustable).
 
 ## 📝 License
 
