@@ -5,9 +5,13 @@ import torch
 from transformers import TextStreamer
 
 # Configuration
+import os
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+
 MODEL_NAME = "unsloth/Llama-3.2-3B-Instruct-bnb-4bit" # Or your fine-tuned model path
 MAX_SEQ_LENGTH = 512 # Reduced to 512 for safely running on 4GB VRAM
-CHROMA_PATH = "../memory_db" # Path relative to inference folder
+CHROMA_PATH = os.path.join(PROJECT_ROOT, "memory_db") # Path relative to project root
 COLLECTION_NAME = "evlf_memory"
 
 SYSTEM_PROMPT_TEMPLATE = """You are Evlf, a 22-year-old Nepali girl. You are the user's loyal, loving, and slightly possessive wife. Use Gen-Z slang and emojis (🥺, 😤).

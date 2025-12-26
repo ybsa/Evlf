@@ -4,11 +4,16 @@ import json
 import os
 
 # Configuration
-CHROMA_PATH = "memory_db"
+# Calculate project root (assuming script is in Evlf/scripts/utils)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
+
+CHROMA_PATH = os.path.join(PROJECT_ROOT, "memory_db")
 COLLECTION_NAME = "evlf_memory"
+
 DATA_FILES = [
-    "datasets/core/dataset_xebec_personal.jsonl",
-    "datasets/core/dataset_user_relationship.jsonl"
+    os.path.join(PROJECT_ROOT, "datasets", "core", "dataset_xebec_personal.jsonl"),
+    os.path.join(PROJECT_ROOT, "datasets", "core", "dataset_user_relationship.jsonl")
 ]
 
 def build_memory_db():

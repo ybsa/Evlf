@@ -6,10 +6,14 @@ from datasets import load_dataset
 import os
 
 # Configuration
+# Calculate project root (assuming script is in Evlf/training)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+
 MODEL_NAME = "unsloth/Llama-3.2-3B-Instruct-bnb-4bit" # Pre-quantized for 4-bit
 NEW_MODEL_NAME = "Evlf-Llama-3.2-3B-Unsloth"
-DATASET_FILE = "datasets/core/dataset_evlf_persona.jsonl" # Will need to be the combined dataset eventually
-OUTPUT_DIR = "./results_unsloth"
+DATASET_FILE = os.path.join(PROJECT_ROOT, "datasets", "core", "dataset_evlf_persona.jsonl")
+OUTPUT_DIR = os.path.join(CURRENT_DIR, "results_unsloth")
 MAX_SEQ_LENGTH = 512 # Critical for 4GB VRAM
 
 def train():
@@ -38,8 +42,8 @@ def train():
     print(f"Loading dataset from {DATASET_FILE}...")
     # Trying to load multiple files if they exist, otherwise just the persona one for now
     data_files = []
-    if os.path.exists("datasets/core/dataset_evlf_persona.jsonl"):
-        data_files.append("datasets/core/dataset_evlf_persona.jsonl")
+    if os.path.exists(DATASET_FILE):
+        data_files.append(DATASET_FILE)
     
     # We will assume datasets are regenerated in ChatML format
     dataset = load_dataset("json", data_files=data_files, split="train")
