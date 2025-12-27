@@ -30,7 +30,7 @@ def build_memory_db():
     try:
         client.delete_collection(name=COLLECTION_NAME)
         print(f"Deleted existing collection: {COLLECTION_NAME}")
-    except ValueError:
+    except Exception:
         pass
         
     collection = client.create_collection(
