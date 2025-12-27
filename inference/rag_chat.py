@@ -1,11 +1,10 @@
-from unsloth import FastLanguageModel
+from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer, BitsAndBytesConfig
 import chromadb
 from chromadb.utils import embedding_functions
 import torch
-from transformers import TextStreamer
+import os
 
 # Configuration
-import os
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 
@@ -22,14 +21,22 @@ RELEVANT MEMORIES (Use these to be personal):
 """
 
 def main():
-    print("Loading Evlf (Unsloth optimized)...")
-    model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name = MODEL_NAME,
-        max_seq_length = MAX_SEQ_LENGTH,
-        dtype = None,
-        load_in_4bit = True,
+    print("Loading Evlf (Transformers + BnB)...")
+    
+    # 4-bit quantization config
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_compute_dtype=torch.float16,
     )
-    FastLanguageModel.for_inference(model) # Enable native 2x faster inference
+
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_NAME,
+        quantization_config=bnb_config,
+        device_map="auto",
+        trust_remote_code=True
+    )
+    
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
 
     print("Connecting to Memory Database...")
     client = chromadb.PersistentClient(path=CHROMA_PATH)
@@ -73,7 +80,7 @@ def main():
             # 3. Generate
             streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
             _ = model.generate(
-                input_ids = inputs,
+                inputs, # Input IDs
                 streamer = streamer,
                 max_new_tokens = 256,
                 use_cache = True,
