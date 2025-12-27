@@ -1,8 +1,8 @@
---extra-index-url https://download.pytorch.org/whl/cu121
-torch==2.5.1
-torchvision==0.20.1
-torchaudio==2.5.1
-transformers==4.48.2
+--extra-index-url https://download.pytorch.org/whl/nightly/cu121
+# PyTorch 2.6 Nightly (Required for transformers 4.57+ compatibility)
+--pre torch torchvision torchaudio
+# Core Libraries (Tested & Working)
+transformers==4.57.3
 bitsandbytes==0.49.0
 peft==0.14.0
 trl==0.14.2
@@ -12,5 +12,5 @@ chromadb==0.5.20
 sentence-transformers==3.3.1
 scipy==1.14.1
 huggingface_hub==0.24.7
-unsloth
 numpy<2.0
+# unsloth - Install separately for training if needed

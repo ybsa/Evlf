@@ -10,41 +10,48 @@ This project uses **Unsloth** for efficient fine-tuning and **ChromaDB** for RAG
 - **NVIDIA GPU** with CUDA support (Minimum 4GB VRAM with 4-bit quantization)
 - **RAM**: 8GB+ recommended
 
-## 🎯 Quick Start
+## 🚀 Quick Start
 
-### 1. Environment Setup (Critical)
+### Prerequisites
 
-You **must** use Python 3.10 to avoid GPU compatibility issues.
+- **Python 3.10** (Required - 3.11+ not compatible)
+- **NVIDIA GPU** with CUDA 12.1+ support
+- **Windows 10/11** (or Linux/Colab for easier setup)
 
-```powershell
-# 1. Create a virtual environment using Python 3.10
-py -3.10 -m venv .venv
+### Installation
 
-# 2. Activate the environment
-.\.venv\Scripts\activate
+1. **Create Virtual Environment**
 
-# 3. Install dependencies (with GPU support)
-# This installs PyTorch with CUDA 12.1
-pip install -r requirements.txt
-```
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate  # Windows
+   ```
 
-### 2. Prepare Memory (RAG)
+2. **Install Dependencies**
 
-Before chatting, you need to build Evlf's memory database from the datasets.
+   ```bash
+   # IMPORTANT: Use PyTorch 2.6 Nightly for full compatibility
+   pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
+   pip install -r requirements.txt
+   ```
 
-```bash
-cd scripts/utils
-python build_memory_db.py
-```
+3. **Build Memory Database**
 
-This creates the `memory_db/chroma.sqlite3` database.
+   ```bash
+   python scripts/utils/build_memory_db.py
+   ```
 
-### 3. Chat with Evlf
+4. **Chat with Evlf**
 
-```bash
-cd inference
-python rag_chat.py
-```
+   ```bash
+   python inference/rag_chat.py
+   ```
+
+### Alternative: Google Colab (Recommended for Windows users)
+
+Upload the project folder to Google Drive and use `Evlf_RAG_Chat_Colab.ipynb` for instant setup with free GPU!
+
+See `COLAB_SETUP.md` for detailed instructions.
 
 - **`rag_chat.py`**: Uses RAG (Memory). Recommended.
 - `chat.py`: Basic chat without memory.
