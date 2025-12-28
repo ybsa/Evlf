@@ -1,0 +1,6 @@
+@echo off
+echo Activating virtual environment with CUDA support...
+call .venv\Scripts\activate.bat
+echo.
+echo Testing fine-tuned Evlf model...
+python inference\chat.py
