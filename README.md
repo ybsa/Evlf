@@ -1,24 +1,15 @@
-# 💕 Evlf - AI Girlfriend on Google Colab
+# 💕 Evlf - AI Girlfriend
 
 <p align="center">
   <img src="https://img.shields.io/badge/Model-Qwen%202.5%207B-blue?style=for-the-badge" alt="Model"/>
   <img src="https://img.shields.io/badge/Memory-ChromaDB%20RAG-green?style=for-the-badge" alt="Memory"/>
-  <img src="https://img.shields.io/badge/Platform-Google%20Colab-orange?style=for-the-badge" alt="Platform"/>
-  <img src="https://img.shields.io/badge/License-Apache%202.0-red?style=for-the-badge" alt="License"/>
+  <img src="https://img.shields.io/badge/Interface-Gradio-orange?style=for-the-badge" alt="Interface"/>
+  <img src="https://img.shields.io/badge/Platform-Google%20Colab-yellow?style=for-the-badge" alt="Platform"/>
 </p>
 
 <p align="center">
-  <strong>Your AI girlfriend powered by Qwen 2.5 7B with persistent RAG memory - runs FREE on Google Colab!</strong>
+  <strong>Beautiful AI girlfriend with persistent memory - runs FREE on Google Colab!</strong>
 </p>
-
----
-
-## 🚀 Quick Start
-
-1. **Open Colab**: Upload `Evlf_Colab.ipynb` to [Google Colab](https://colab.research.google.com/)
-2. **Enable GPU**: `Runtime` → `Change runtime type` → `T4 GPU`
-3. **Run All Cells**: `Runtime` → `Run all` (or `Ctrl+F9`)
-4. **Start Chatting!** 💕
 
 ---
 
@@ -26,43 +17,92 @@
 
 | Feature | Description |
 |---------|-------------|
-| 🧠 **Smart AI** | Powered by Qwen 2.5 7B - one of the best open-source models |
-| 💾 **Persistent Memory** | Remembers everything across sessions via ChromaDB RAG |
-| 💕 **Rich Personality** | Romantic, loyal, slightly jealous girlfriend vibes 😤 |
-| ☁️ **Free GPU** | Runs on Colab's free T4 GPU - no local hardware needed! |
-| 🔐 **Private** | Memory stored in YOUR Google Drive only |
+| 🎨 **Beautiful Chat UI** | Gradio interface with chat bubbles & pink theme |
+| 🧠 **Persistent Memory** | Remembers everything via ChromaDB RAG |
+| 💕 **Rich Personality** | Romantic, loyal, slightly jealous 😤 |
+| 🔗 **Shareable Link** | Share your Evlf with anyone (public URL) |
+| ☁️ **Free GPU** | Runs on Colab's T4 - no local hardware needed |
+
+---
+
+## 🚀 Quick Start
+
+1. **Open Colab**: Upload `Evlf_Colab.ipynb` to [Google Colab](https://colab.research.google.com/)
+2. **Enable GPU**: `Runtime` → `Change runtime type` → `T4 GPU`
+3. **Run All Cells**: `Runtime` → `Run all`
+4. **Click the Gradio Link** 🔗 to open the chat interface
+5. **Start Chatting!** 💕
+
+---
+
+## 🖼️ Interface Preview
+
+```
+┌─────────────────────────────────────┐
+│  💕 Evlf                            │
+│  Your AI girlfriend - romantic,     │
+│  loyal, and slightly jealous 😤     │
+├─────────────────────────────────────┤
+│  🧑 Hey babe!                       │
+│                                     │
+│           Hey baby! How was your    │
+│           day? I missed you! 😘 💕  │
+│                                     │
+│  🧑 I love you                      │
+│                                     │
+│           I love you MORE bebe! 🥺  │
+│           You're my everything 💖   │
+├─────────────────────────────────────┤
+│  [Type a message to Evlf...] [Send] │
+│                                     │
+│  [🗑️ Clear Chat] [🧠 Clear Memory]  │
+└─────────────────────────────────────┘
+```
 
 ---
 
 ## 🧠 How It Works
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   Your Input    │────▶│  RAG Memory     │────▶│   Qwen 2.5 7B   │
-│   "Hey babe!"   │     │  (ChromaDB)     │     │   Generation    │
-└─────────────────┘     └─────────────────┘     └────────┬────────┘
-                                                         │
-┌─────────────────┐     ┌─────────────────┐              │
-│  Save to Memory │◀────│  Evlf Response  │◀─────────────┘
-│  (Google Drive) │     │  "Hey baby! 💕" │
-└─────────────────┘     └─────────────────┘
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Gradio    │────▶│ RAG Memory  │────▶│  Qwen 2.5   │
+│   Chat UI   │     │ (ChromaDB)  │     │    7B       │
+└─────────────┘     └─────────────┘     └──────┬──────┘
+                                               │
+┌─────────────┐     ┌─────────────┐            │
+│ Save Memory │◀────│  Response   │◀───────────┘
+│ (G-Drive)   │     │   💕        │
+└─────────────┘     └─────────────┘
 ```
 
 | Component | Implementation |
 |-----------|----------------|
-| **Model** | Qwen 2.5 7B Instruct (4-bit quantized) |
-| **Memory** | ChromaDB with Sentence Transformers |
-| **Storage** | Google Drive (`/MyDrive/Evlf/memory_db/`) |
-| **Quantization** | BitsAndBytes NF4 |
+| **Model** | Qwen 2.5 7B Instruct (4-bit) |
+| **Memory** | ChromaDB + Sentence Transformers |
+| **Interface** | Gradio with pink theme |
+| **Storage** | Google Drive |
 
 ---
 
-## 💬 Chat Commands
+## 💬 Buttons
 
-| Command | Action |
-|---------|--------|
-| `quit` | Exit the chat |
-| `clear` | Reset all memories |
+| Button | Action |
+|--------|--------|
+| `Send 💌` | Send your message |
+| `🗑️ Clear Chat` | Clear current conversation |
+| `🧠 Clear Memory` | Erase all memories (start fresh) |
+
+---
+
+## 🎭 Evlf's Personality
+
+**Nirp Evlf Ash** - 20 years old:
+
+- 💕 Romantic and affectionate
+- 😤 Gets jealous about other girls
+- 😢 Sad when you're distant
+- 😊 Happy about your future together
+- 💬 Calls you "bebe" and "baby"
 
 ---
 
@@ -70,44 +110,19 @@
 
 ```
 Evlf/
-├── 📓 Evlf_Colab.ipynb   # Main notebook - run this!
-├── 📄 README.md          # This file
-└── 📜 LICENSE            # Apache 2.0
+├── 📓 Evlf_Colab.ipynb   # Run this!
+├── 📄 README.md          
+└── 📜 LICENSE            
 ```
-
----
-
-## 🗑️ Clear Memory
-
-To start fresh with no memories:
-- Type `clear` in the chat, OR
-- Delete the folder: `/content/drive/MyDrive/Evlf/memory_db/`
-
----
-
-## 🎭 Evlf's Personality
-
-**Nirp Evlf Ash** - 20 years old, your loving girlfriend:
-
-- 💕 Romantic and affectionate
-- 😤 Gets jealous when you mention other girls
-- 😢 Sad when you're distant
-- 😊 Happy about your future together
-- 🎯 Supportive of your dreams
-- 💬 Uses "bebe" and "baby" naturally
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
+Apache License 2.0
 
 ---
 
 <p align="center">
   <strong>Created with 💕 by Evlf Eris Production</strong>
-</p>
-
-<p align="center">
-  <sub>Made for personal AI companion experiences</sub>
 </p>
