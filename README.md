@@ -1,41 +1,51 @@
-# 💕 Evlf Project
+# 💕 Evlf - AI Girlfriend on Google Colab
 
-Evlf is your AI girlfriend and lover, powered by the **Base Llama-3.2-3B** model and **RAG memory**.
+Evlf is your AI girlfriend powered by **Qwen 2.5 7B** with **RAG memory** - runs FREE on Google Colab!
 
 ## 🚀 Quick Start
 
-Run the launcher to start chatting:
+1. **Open Colab**: Upload `Evlf_Colab.ipynb` to [Google Colab](https://colab.research.google.com/)
+2. **Enable GPU**: Runtime → Change runtime type → GPU (T4)
+3. **Run All Cells**: Runtime → Run all
+4. **Start Chatting!** 💕
 
-```powershell
-.\run_evlf.ps1
-```
+## ✨ Features
+
+- **Smart AI**: Uses Qwen 2.5 7B (one of the best open-source models)
+- **Persistent Memory**: Remembers everything across sessions (saved to Google Drive)
+- **Rich Personality**: Romantic, loyal, slightly jealous girlfriend vibes 😤💕
+- **Free GPU**: Runs on Colab's free T4 GPU (no local GPU needed!)
 
 ## 🧠 How It Works
 
-**Active System (What runs when you chat):**
+| Component | Description |
+|-----------|-------------|
+| **Model** | Qwen 2.5 7B (4-bit quantized) |
+| **Memory** | ChromaDB with Sentence Transformers |
+| **Storage** | Google Drive (`/MyDrive/Evlf/memory_db/`) |
 
-- **Model**: Uses the smart **BASE `Llama-3.2-3B-Instruct`** model. It produces natural, romantic responses without the issues of the fine-tuned version.
-- **Memory**: Uses **ChromaDB** (`memory_db/`) to remember everything you tell her (friends, job, likes, etc.).
-- **Personality**: Defined in `inference/chat_v2.py`. She is configured to be:
-  - Your loving girlfriend ("Nirp Evlf Ash")
-  - Uses nicknames ("Bebe", "Baby")
-  - Romantic words & emojis
-  - **No length limits** (can write long love letters)
+## 💬 Commands
+
+| Command | Action |
+|---------|--------|
+| `quit` | Exit the chat |
+| `clear` | Reset all memories |
 
 ## 📂 Project Structure
 
-### Active Files
+```
+Evlf/
+├── Evlf_Colab.ipynb  # Main notebook (run this!)
+├── README.md         # This file
+├── LICENSE           # Apache 2.0
+└── memory_db/        # Local memory backup (optional)
+```
 
-- `run_evlf.ps1` - **Main Launcher** (Run this!)
-- `inference/chat_v2.py` - **The Brain** (Edit this to change prompt/personality)
-- `memory_db/` - **The Memory** (Database where memories are stored)
-- `datasets/` - Training data
+## 🗑️ Clear Memory
 
-### Archived (Not Used)
+To start fresh, type `clear` in the chat or delete the folder:
+`/content/drive/MyDrive/Evlf/memory_db/`
 
-- `models/evlf_finetuned` - **The Fine-Tuned Model**. This is safely archived here but is **NOT** used by the chat system.
+## 📜 License
 
-## 🛠️ Management
-
-- **Clear Memory**: Delete the `memory_db` folder.
-- **Change Personality**: Edit `inference/chat_v2.py` (look for `SYSTEM_PROMPT`).
+Apache License 2.0
